@@ -1,22 +1,22 @@
- 
+//calculate total monthly payments 
 function calculateRemaingBalance() { //remaining balance before very first month
     let loanAmount = document.getElementById('loanAmount').value;
 
-    let totalPrincipalResults = document.getElementById('totalPrincipalResults');
+    let totalPrincipal = document.getElementById('totalPrincipalResults');
 
     loanAmount = parseInt(loanAmount);
 
     if (isNaN(loanAmount)) {
         alert("Numbers only, please!");
     } else {
-        let totalPrincipal = loanAmount;
+        let totalPrincipalResults = loanAmount;
         totalPrincipalResults.textContent = totalPrincipal;
 
-        document.getElementById('totalPrincipalResults').textContent = totalPrincipalResults.toLocaleString();
-    }
+        // document.getElementById('totalPrincipalResults').textContent = totalPrincipal.toLocaleString();
+    }return totalPrincipal
 
 }
-//calculate total monthly payments
+
 function calculateTotalMonthlyPayments() {
 
     let loanAmount = document.getElementById('loanAmount').value;
@@ -61,24 +61,16 @@ function calculateTotalCost() {
     let loanAmount = document.getElementById('loanAmount').value;
     let interestRate = document.getElementById('interestRate').value;
 
-    loanAmount = parseInt(loanAmount);
-    interestRate = parseInt(interestRate);
-
-    if (isNaN(loanAmount) || isNaN(interestRate)) {
-        alert("Numbers only, please!");
-    } else {
-        return loanAmount + interestRate * 1200;
-    }
-
     let totalCost = loanAmount + interestRate * 1200;
     document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
         style: 'currency',
         currency: 'USD',
     });
-    return totalCost
+    return totalCost;
 
 
 }
+
 
 //get loan payment schedule by month 
 function createPaymentSchedule() {
@@ -106,6 +98,10 @@ function createPaymentSchedule() {
     let principalPayment = 0;
     let monthlyInterest = 0;
 
+
+
+
+
     //create a for loop to break up into EACH month
     for (month = 1; month <= termLength; month++) {
         monthlyInterest = calculateInterestPayment(remBalance);
@@ -113,7 +109,11 @@ function createPaymentSchedule() {
         principalPayment = totalMonthlyPayment - monthlyInterest;
         remBalance = remBalance - principalPayment;
 
+
+
         let monthlyRow = document.importNode(outputTableRowTemplate.content, true);
+
+
 
         let tableCells = monthlyRow.querySelectorAll('td');
 
@@ -144,7 +144,7 @@ function createPaymentSchedule() {
 
     }
 
-    document.getElementById('totalPrincipalResults').textContent = totalPrincipalResults.toLocaleString("en-US", {
+     document.getElementById('totalPrincipalResults').textContent = loanAmount.toLocaleString("en-US", {
         style: 'currency',
         currency: 'USD',
     });
@@ -152,7 +152,7 @@ function createPaymentSchedule() {
         style: 'currency',
         currency: 'USD',
     });
-    document.getElementById('totalCostResults').textContent = totalCost.toLocaleString("en-US", {
+    document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
         style: 'currency',
         currency: 'USD',
     });

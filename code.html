@@ -4,7 +4,7 @@
 <!--The head tag describes our html page-->
 
 <head>
-    <title>App Name: A Coding Challenge</title>
+    <title>Mortgage Compass: A Coding Challenge by Anna Baschnagel</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
@@ -39,7 +39,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand fs-1" href="/index.html"><img
                         src="/img/For Web/svg/White logo - no background.svg" height="100" />
-                    <span class="ms-5 app-name">App Name</span>
+                    <span class="ms-5 app-name">Mortgage Compass</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -61,10 +61,10 @@
                         </li>
                         <!-- ADD THIS IN BEFORE PUBLISHING -->
                         <li class="nav-item p-3">
-                            <a class="nav-link" href="#">The Repo</a>
+                            <a class="nav-link" href="https://github.com/baschnagelac/acbLoanCalculatorFinal.git" target="_blank">The Repo</a>
                         </li>
                         <li class="nav-item p-3">
-                            <a class="nav-link" href="#">About</a>
+                            <a class="nav-link" href="https://annabaschnagelportfolio.netlify.app/" target="_blank">About</a>
                         </li>
                         <li class="nav-item p-3">
                             <a class="nav-link" href="#">Blog</a>
@@ -81,21 +81,171 @@
 
     <main class="content container  mt-5">
         <div class="row row-cols-1 row-cols-lg-2 p-3">
-            <h1 class=" border-bottom border-2 border-dark">The Code for APP</h1>
+            <h1 class=" border-bottom border-2 border-dark">The Code for Mortgage Compass</h1>
             <!-- source code -->
             <div class="col-12 col-lg-8">
                 <pre class="line-numbers">
                         <code class="language-javascript ">
-                            function displayMessage() {
-                                let msg = document.getElementById('message').value;
+ 
+                            function calculateRemaingBalance() { //remaining balance before very first month
+                                let loanAmount = document.getElementById('loanAmount').value;
                             
-                                Swal.fire(
-                                    {
-                                        backdrop: false,
-                                        title: 'App Name',
-                                        text: msg
-                                    }
-                                )
+                                let totalPrincipalResults = document.getElementById('totalPrincipalResults');
+                            
+                                loanAmount = parseInt(loanAmount);
+                            
+                                if (isNaN(loanAmount)) {
+                                    alert("Numbers only, please!");
+                                } else {
+                                    let totalPrincipal = loanAmount;
+                                    totalPrincipalResults.textContent = totalPrincipal;
+                            
+                                    document.getElementById('totalPrincipalResults').textContent = totalPrincipalResults.toLocaleString();
+                                }
+                            
+                            }
+                            //calculate total monthly payments
+                            function calculateTotalMonthlyPayments() {
+                            
+                                let loanAmount = document.getElementById('loanAmount').value;
+                                let interestRate = document.getElementById('interestRate').value;
+                                let termLength = document.getElementById('termLength').value
+                            
+                                loanAmount = parseInt(loanAmount);
+                                interestRate = parseInt(interestRate);
+                                termLength = parseInt(termLength);
+                            
+                            
+                                if (isNaN(loanAmount) || isNaN(interestRate) || isNaN(interestRate)) {
+                                    alert("Numbers only, please!");
+                                } else {
+                                    let monthlyPayment = (loanAmount * (interestRate / 1200)) / (1 - ((1 + interestRate / 1200) ** -termLength))
+                                    document.getElementById('yourMonthlyPaymentResults').textContent = Number(monthlyPayment).toLocaleString("en-US", {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                    });
+                                    return monthlyPayment;
+                                }
+                            }
+                            
+                            
+                            
+                            //calculate interest payment
+                            function calculateInterestPayment(remBalance) {
+                                let loanAmount = document.getElementById('loanAmount').value;
+                                let interestRate = document.getElementById('interestRate').value;
+                            
+                                loanAmount = parseInt(loanAmount);
+                                interestRate = parseInt(interestRate);
+                            
+                                if (isNaN(loanAmount) || isNaN(interestRate)) {
+                                    alert("Numbers only, please!");
+                                } else {
+                                    return remBalance * (interestRate / 1200)
+                                }
+                            }
+                            //calculating total cost? 
+                            function calculateTotalCost() {
+                                let loanAmount = document.getElementById('loanAmount').value;
+                                let interestRate = document.getElementById('interestRate').value;
+                            
+                                loanAmount = parseInt(loanAmount);
+                                interestRate = parseInt(interestRate);
+                            
+                                if (isNaN(loanAmount) || isNaN(interestRate)) {
+                                    alert("Numbers only, please!");
+                                } else {
+                                    return loanAmount + interestRate * 1200;
+                                }
+                            
+                                let totalCost = loanAmount + interestRate * 1200;
+                                document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                });
+                                return totalCost
+                            
+                            
+                            }
+                            
+                            //get loan payment schedule by month 
+                            function createPaymentSchedule() {
+                                let loanAmount = document.getElementById('loanAmount').value;
+                                let interestRate = document.getElementById('interestRate').value;
+                                let termLength = document.getElementById('termLength').value
+                            
+                                loanAmount = parseFloat(loanAmount);
+                                interestRate = parseFloat(interestRate);
+                                termLength = parseInt(termLength);
+                            
+                            
+                                //make table 
+                                let outputTableBody = document.getElementById('outputTableBody');
+                                const outputTableRowTemplate = document.getElementById('outputTableRowTemplate');
+                            
+                            
+                                //clear table body 
+                                outputTableBody.innerHTML = '';
+                            
+                                //variables for the monthly payment schedule - start from 0
+                                let totalMonthlyPayment = calculateTotalMonthlyPayments();
+                                let remBalance = loanAmount;
+                                let totalInterest = 0;
+                                let principalPayment = 0;
+                                let monthlyInterest = 0;
+                            
+                                //create a for loop to break up into EACH month
+                                for (month = 1; month <= termLength; month++) {
+                                    monthlyInterest = calculateInterestPayment(remBalance);
+                                    totalInterest += monthlyInterest;
+                                    principalPayment = totalMonthlyPayment - monthlyInterest;
+                                    remBalance = remBalance - principalPayment;
+                            
+                                    let monthlyRow = document.importNode(outputTableRowTemplate.content, true);
+                            
+                                    let tableCells = monthlyRow.querySelectorAll('td');
+                            
+                                    tableCells[0].textContent = month;
+                                    tableCells[1].textContent = totalMonthlyPayment.toLocaleString("en-US", {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                    });
+                                    tableCells[2].textContent = principalPayment.toLocaleString("en-US", {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                    });
+                                    tableCells[3].textContent = monthlyInterest.toLocaleString("en-US", {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                    });
+                                    tableCells[4].textContent = totalInterest.toLocaleString("en-US", {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                    });
+                                    tableCells[5].textContent = remBalance.toLocaleString("en-US", {
+                                        style: 'currency',
+                                        currency: 'USD',
+                                    });
+                            
+                                    outputTableBody.appendChild(monthlyRow);
+                            
+                            
+                                }
+                            
+                                document.getElementById('totalPrincipalResults').textContent = totalPrincipalResults.toLocaleString("en-US", {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                });
+                                document.getElementById('totalInterestResults').textContent = totalInterest.toLocaleString("en-US", {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                });
+                                document.getElementById('totalCostResults').textContent = totalCost.toLocaleString("en-US", {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                });
+                            
+                            
                             }
                             
                         </code>
@@ -103,17 +253,29 @@
             </div>
             <!-- code description -->
             <div class="col-12 col-lg-4">
-                <h5>The code is structured in three functions</h5>
-                <p>The first function <code>function getValues()</code> gets the user's input from the page and acts as
-                    a controller function or entry point. It then gets the starting and ending values from the page.
-                    Next, it parses the inputs as numbers and verifies that they ARE numbers. If they ARE numbers, the
-                    numbers are generated and displayed on the page. If they are not, we tell the user with an Sweet
-                    Alert.</p>
-                <p>The second function <code>function generateNumbers(start, end)</code>generates our numbers and
-                    contains the logic parts of the function by running a for loop. </p>
-                <p>The third function <code>function displayNumbers(numberArray)</code> acts as the view function and
-                    displays the numbers on the page. Within this function, we use a for loop and if statements to
-                    control the display of the results.</p>
+                <h5 class="fs-2">The code is structured in three functions</h5>
+                <p>Please Note: Some of the characters may not display correectly, please see the Repo link in the
+                    navigation menu for the full details.</p>
+
+                    <code>function calculateX()</code>
+                <p>There are four main calculation functions used in this mortgage calculator. 1. Calculate remaining
+                balance 2. Calculate total monthly payments 3. Calculate interest Payment 4. Calculate total cost. These
+                functions begin by getting the user's inputs for the ID's relating to: loan amount, interest rate, term
+                length of loan. All of these calculation functions also parse's the inputs out of string-form and then
+                verifies if they're integers via if/else statements. If they are integers, then relevant forumulas are
+                used to do math calculations within the calculation functions. This data will be used in the controller
+                function next.</p>
+
+                <code>function createPaymentSchedule</code>
+                <p>The main function of this function is to create a monthly payment schedule for the loan payments. This
+                function begins by taking the user's loan amount, interest rate, and term length from their input
+                values. It parses them into integers. Then it makes a table for the output of the schedule so the user
+                can view all the months together. The table is cleared so that there is no other data for the user to
+                see. Variables for various aspects of the calculations are set -- most start from 0, but a couple use
+                calculations in previous functinos in the program. Next, a for loop is used to break up the data into
+                EACH month. The HTML template is then imported into the program so that tableCells with textContent can
+                display with the propery currency styling. The child of the table is appended into rows. Lastly, the
+                totals for principal, interest, and costs are called to display.</p>
 
             </div>
         </div>
@@ -163,7 +325,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
-        <script src="js/site.js"></script>
+    <script src="js/site.js"></script>
     <script src="js/prism.js"></script>
     <script>
         Prism.plugins.NormalizeWhitespace.setDefaults({
