@@ -70,12 +70,7 @@ function calculateTotalCost() {
         return loanAmount + interestRate * 1200;
     }
 
-    let totalCost = loanAmount + interestRate * 1200;
-    document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
-        style: 'currency',
-        currency: 'USD',
-    });
-    return totalCost
+  
 
 
 }
@@ -152,6 +147,7 @@ function createPaymentSchedule() {
         style: 'currency',
         currency: 'USD',
     });
+    let totalCost = loanAmount + totalInterest;
     document.getElementById('totalCostResults').textContent = totalCost.toLocaleString("en-US", {
         style: 'currency',
         currency: 'USD',

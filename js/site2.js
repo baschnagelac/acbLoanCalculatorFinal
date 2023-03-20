@@ -61,12 +61,20 @@ function calculateTotalCost() {
     let loanAmount = document.getElementById('loanAmount').value;
     let interestRate = document.getElementById('interestRate').value;
 
-    let totalCost = loanAmount + interestRate * 1200;
-    document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
-        style: 'currency',
-        currency: 'USD',
-    });
-    return totalCost;
+    // let totalCost = loanAmount + interestRate * 1200;
+    // document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
+    //     style: 'currency',
+    //     currency: 'USD',
+    // });
+    // return totalCost;
+    loanAmount = parseInt(loanAmount);
+    interestRate = parseInt(interestRate);
+
+    if (isNaN(loanAmount) || isNaN(interestRate)) {
+        alert("Numbers only, please!");
+    } else {
+        return loanAmount + interestRate * 1200;
+    }
 
 
 }
@@ -152,7 +160,8 @@ function createPaymentSchedule() {
         style: 'currency',
         currency: 'USD',
     });
-    document.getElementById('totalCostResults').textContent = totalCostResults.toLocaleString("en-US", {
+    let totalCost = loanAmount + totalInterest;
+    document.getElementById('totalCostResults').textContent = totalCost.toLocaleString("en-US", {
         style: 'currency',
         currency: 'USD',
     });
